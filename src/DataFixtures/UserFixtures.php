@@ -29,6 +29,7 @@ class UserFixtures extends Fixture
                 ->setEmail($faker->email())
                 ->setPassword(password_hash('password', PASSWORD_BCRYPT));
 
+            $this->addReference('user_' . $i, object: $user);
             $manager->persist($user);
         }
 

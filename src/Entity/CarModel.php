@@ -18,10 +18,6 @@ class CarModel
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'carModels')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?CarBrand $brand = null;
-
     /**
      * @var Collection<int, Car>
      */
@@ -46,18 +42,6 @@ class CarModel
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getBrand(): ?CarBrand
-    {
-        return $this->brand;
-    }
-
-    public function setBrand(?CarBrand $brand): static
-    {
-        $this->brand = $brand;
 
         return $this;
     }
