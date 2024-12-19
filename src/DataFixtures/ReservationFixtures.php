@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\DataFixtures\CarFixtures;
 use App\Entity\Reservation;
 use App\Entity\User;
 use App\Entity\Car;
@@ -38,7 +39,7 @@ class ReservationFixtures extends Fixture implements DependentFixtureInterface
             $beginningDate = $faker->dateTimeBetween('-6 month', '+1 month');
             $endingDate = (clone $beginningDate)->modify('+' . rand(1, 14) . ' days');
 
-            $user = $this->getReference('user_' . rand(0, 99), User::class);
+            $user = $this->getReference('user_' . rand(0, 98), User::class);
 
             $car = $this->getReference('car_' . rand(0, 19), Car::class);
 

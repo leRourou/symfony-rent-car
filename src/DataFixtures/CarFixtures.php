@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\DataFixtures\CarModelFixtures;
 use App\Entity\Car;
 use App\Entity\CarModel;
 use App\Service\FakerService;
