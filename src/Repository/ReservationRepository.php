@@ -16,28 +16,20 @@ class ReservationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reservation::class);
     }
 
-//    /**
-//     * @return Reservation[] Returns an array of Reservation objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findReservedDays(int $carId, int $month, int $year): array
+    {
+        $beginningDate = new \DateTimeImmutable(sprintf('%d-%d-01 00:00:00', $year, $month));
+        $endingDate = $beginningDate->modify('last day of this month')->setTime(23, 59, 59);
 
-//    public function findOneBySomeField($value): ?Reservation
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return $this->createQueryBuilder('r')
+            ->select('r')
+            ->where('r.car = :carId')
+            ->andWhere('r.beginningDate BETWEEN :beginningDate AND :endingDate')
+            ->orWhere('r.endingDate BETWEEN :beginningDate AND :endingDate')
+            ->setParameter('carId', $carId)
+            ->setParameter('beginningDate', $beginningDate)
+            ->setParameter('endingDate', $endingDate)
+            ->getQuery()
+            ->getResult();
+    }
 }
