@@ -25,6 +25,8 @@
         </div>
     {% endif %}
 
+    <twig:title title="Liste des véhicules" />
+
     <!-- Barre de recherche -->
     <div class="mb-4">
         <form method="get" action="{{ path('admin_cars') }}" class="flex">
@@ -38,30 +40,59 @@
         </form>
     </div>
 
+    <!-- Détails du véhicule sélectionné -->
+    {% if selectedCar %}
+        <div class="mb-4 bg-white p-4 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-bold text-orange-600">{{ selectedCar.getModel.name }}</h1>
+                <div class="space-x-2">
+                    <a class="text-orange-600 hover:text-orange-800">✏️</a>
+                    <a class="text-orange-600 hover:text-orange-800">🗑️</a>
+                </div>
+            </div>
+            <div class="w-full gap-2">
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Immatriculation</p>
+                    <p>{{ selectedCar.registrationNumber }}</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Année de mise en circulation</p>
+                    <p>{{ selectedCar.year }}</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Peux être réservé</p>
+                    <p>{{ selectedCar.isCanBeRent ? 'Oui' : 'Non' }}</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Prix par jour</p>
+                    <p>A définir</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Nombre de réservations</p>
+                    <p>{{ selectedCar.getReservations|length }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     <!-- Tableau des véhicules -->
     <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
         <thead>
             <tr class="bg-orange-600 text-white">
                 <th class="px-4 py-2 text-left">Modèle</th>
                 <th class="px-4 py-2 text-left">Immatriculation</th>
-                <th class="px-4 py-2 text-left">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for car in cars %}
-                <tr class="border-b border-gray-300">
-                    <td class="px-4 py-2">{{ car.getModel.name }}</td>
-                    <td class="px-4 py-2">{{ car.registrationNumber }}</td>
-                    <td class="px-4 py-2">                        
-                        <a href="{{ path('admin_reservations', { carId: car.id }) }}" class="text-blue-600 hover:text-blue-800">
-                            Voir les réservations
-                        </a>
-                    </td>
-                </tr>
+            <tr class="border-b border-gray-300 cursor-pointer {% if selectedCar and selectedCar.id == car.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_cars', { selected: car.id }) }}'">
+                <td class="px-4 py-2">{{ car.getModel.name }}</td>
+                <td class="px-4 py-2">{{ car.registrationNumber }}</td>
+            </tr>
             {% else %}
-                <tr>
-                    <td colspan="5" class="px-4 py-2 text-center text-gray-500">Aucun véhicule trouvé</td>
-                </tr>
+            <tr>
+                <td colspan="5" class="px-4 py-2 text-center text-gray-500">Aucun véhicule trouvé</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>

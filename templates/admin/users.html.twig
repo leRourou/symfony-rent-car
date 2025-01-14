@@ -14,20 +14,20 @@
     {% set errorMessages = app.flashes('error') %}
 
     {% if successMessages %}
-        <div class="bg-green-100 text-green-700 p-4 rounded">
+        <div class="bg-green-100 text-green-700 p-4 rounded mb-4">
             {{ successMessages|first }}
         </div>
     {% endif %}
 
     {% if errorMessages %}
-        <div class="bg-red-100 text-red-700 p-4 rounded">
+        <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
             {{ errorMessages|first }}
         </div>
     {% endif %}
 
     <!-- Barre de recherche -->
     <div class="mb-4">
-        <form method="get" action="{{ path('admin_dashboard') }}" class="flex">
+        <form method="get" action="{{ path('admin_users') }}" class="flex">
             <input type="text" name="search" placeholder="Rechercher des utilisateurs..." 
                 class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-orange-400" 
                 value="{{ app.request.get('search')|default('') }}">
@@ -38,6 +38,33 @@
         </form>
     </div>
 
+    <!-- Détails de l'utilisateur sélectionné -->
+    {% if selectedUser %}
+        <div class="mb-4 bg-white p-4 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-bold text-orange-600">{{ selectedUser.email }}</h1>
+                <div class="space-x-2">
+                    <a class="text-orange-600 hover:text-orange-800">✏️</a>
+                    <a class="text-orange-600 hover:text-orange-800">🗑️</a>
+                </div>
+            </div>
+            <div class="w-full gap-2">
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Prénom</p>
+                    <p>{{ selectedUser.firstname }}</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Nom de famille</p>
+                    <p>{{ selectedUser.lastname }}</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Nombre de réservations</p>
+                    <p>{{ selectedUser.getReservations|length }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     <!-- Tableau des utilisateurs -->
     <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
         <thead>
@@ -45,30 +72,14 @@
                 <th class="px-4 py-2 text-left">Prénom</th>
                 <th class="px-4 py-2 text-left">Nom</th>
                 <th class="px-4 py-2 text-left">Email</th>
-                <th class="px-4 py-2 text-left">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
-                <tr class="border-b border-gray-300">
+                <tr class="border-b border-gray-300 cursor-pointer {% if selectedUser and selectedUser.id == user.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_users', { selected: user.id }) }}'">
                     <td class="px-4 py-2">{{ user.firstname }}</td>
                     <td class="px-4 py-2">{{ user.lastname }}</td>
                     <td class="px-4 py-2">{{ user.email }}</td>
-                    <td class="px-4 py-2">
-                    {% if not user.isAdmin %}
-                        <a href="{{ path('admin_reservations', { userId: user.id }) }}" 
-                           class="text-blue-600 hover:text-blue-800">
-                            Voir les réservations
-                        </a>
-                        |
-                        <form method="post" action="{{ path('admin_user_delete', { id: user.id }) }}" 
-                            style="display: inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
-                            <button type="submit" class="text-red-600 hover:text-red-800">
-                                Supprimer
-                            </button>
-                        </form>
-                    {% endif %}
-                    </td>
                 </tr>
             {% else %}
                 <tr>

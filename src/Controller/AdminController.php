@@ -28,10 +28,14 @@ class AdminController extends AbstractController
     public function users(Request $request, UserRepository $userRepository): Response
     {
         $searchTerm = $request->query->get('search', null);
+        $selected = $request->query->get('selected', 0);
+
         $users = $userRepository->search(20, $searchTerm);
+        $selectedUser = $userRepository->find($selected);
 
         return $this->render('admin/users.html.twig', [
             'users' => $users,
+            'selectedUser' => $selectedUser
         ]);
     }
 
@@ -52,20 +56,28 @@ class AdminController extends AbstractController
     public function cars(Request $request, CarRepository $carRepository): Response
     {
         $searchTerm = $request->query->get('search', null);
+        $selected = $request->query->get('selected', 0);
+
         $cars = $carRepository->search(20, $searchTerm);
+        $selectedCar = $carRepository->find($selected);
 
         return $this->render('admin/cars.html.twig', [
             'cars' => $cars,
+            'selectedCar' => $selectedCar
         ]);
     }
 
     #[Route('/reservations', name: 'admin_reservations', methods: ['GET'])]
-    public function reservations(ReservationRepository $reservationRepository): Response
+    public function reservations(Request $request, ReservationRepository $reservationRepository): Response
     {
+        $selected = $request->query->get('selected', 0);
+
         $reservations = $reservationRepository->search();
+        $selectedReservation = $reservationRepository->find($selected);
 
         return $this->render('admin/reservations.html.twig', [
             'reservations' => $reservations,
+            'selectedReservation' => $selectedReservation
         ]);
     }
 }

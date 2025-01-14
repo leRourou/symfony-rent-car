@@ -14,14 +14,57 @@
     {% set errorMessages = app.flashes('error') %}
 
     {% if successMessages %}
-        <div class="bg-green-100 text-green-700 p-4 rounded">
+        <div class="bg-green-100 text-green-700 p-4 rounded m-4">
             {{ successMessages|first }}
         </div>
     {% endif %}
 
     {% if errorMessages %}
-        <div class="bg-red-100 text-red-700 p-4 rounded">
+        <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
             {{ errorMessages|first }}
+        </div>
+    {% endif %}
+
+    <!-- Détails de la réservation sélectionnée -->
+    {% if selectedReservation %}
+        <div class="mb-4 bg-white p-4 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-bold text-orange-600">Réservation n°{{ selectedReservation.id }}</h1>
+                <div class="space-x-2">
+                    <a class="text-orange-600 hover:text-orange-800">✏️</a>
+                    <a class="text-orange-600 hover:text-orange-800">🗑️</a>
+                </div>
+            </div>
+            <div class="w-full gap-2">
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Statut</p>
+                    <p>{{ selectedReservation.getStatus.value }}</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Utilisateur</p>
+                    <a href="{{ path('admin_users', { selected: selectedReservation.getUser.id })}}" class="text-blue-600 hover:text-blue-800">
+                        {{ selectedReservation.getUser.email }}
+                    </a>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Voiture</p>
+                    <a href="{{ path('admin_cars', { selected: selectedReservation.getCar.id })}}" class="text-blue-600 hover:text-blue-800">
+                        {{ selectedReservation.getCar.getModel.name }}
+                    </a>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Début de la location</p>
+                    <p>{{ selectedReservation.getBeginningDate.format('d-m-Y') }}</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Début de la location</p>
+                    <p>{{ selectedReservation.getEndingDate.format('d-m-Y') }}</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Durée de la location</p>
+                    <p>{{ selectedReservation.getDaysDuration }} jours</p>
+                </div>
+            </div>
         </div>
     {% endif %}
 
@@ -31,26 +74,14 @@
             <tr class="bg-orange-600 text-white">
                 <th class="px-4 py-2 text-left">Utilisateur</th>
                 <th class="px-4 py-2 text-left">Voiture</th>
-                <th class="px-4 py-2 text-left">Date de début</th>
-                <th class="px-4 py-2 text-left">Durée de la réservation (en jours)</th>
                 <th class="px-4 py-2 text-left">Statut</th>
             </tr>
         </thead>
         <tbody>
             {% for reservation in reservations %}
-                <tr class="border-b border-gray-300">
-                    <td class="px-4 py-2">
-                        <a href="{{ path('admin_users', { userId: reservation.getUser.id }) }}" class="text-blue-600 hover:text-blue-800">
-                            {{reservation.getUser.email}}
-                        </a>
-                    </td>
-                    <td class="px-4 py-2">
-                        <a href="{{ path('admin_cars', { carId: reservation.getCar.id }) }}" class="text-blue-600 hover:text-blue-800">
-                            {{reservation.getCar.getModel.name}}
-                        </a>
-                    </td>
-                    <td class="px-4 py-2">{{reservation.beginningDate.format("Y-m-d")}}</td>
-                    <td class="px-4 py-2">{{reservation.getDaysDuration}}</td>
+                <tr class="border-b border-gray-300 cursor-pointer {% if selectedReservation and selectedReservation.id == reservation.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_reservations', { selected: reservation.id }) }}'">
+                    <td class="px-4 py-2">{{reservation.getUser.email}}</td>
+                    <td class="px-4 py-2">{{reservation.getCar.getModel.name}}</td>
                     <td class="px-4 py-2">{{reservation.getStatus.value}}</td>
                 </tr>
             {% else %}
