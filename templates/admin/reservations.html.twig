@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des réservations{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+
+    {% set successMessages = app.flashes('success') %}
+    {% set errorMessages = app.flashes('error') %}
+
+    {% if successMessages %}
+        <div class="bg-green-100 text-green-700 p-4 rounded">
+            {{ successMessages|first }}
+        </div>
+    {% endif %}
+
+    {% if errorMessages %}
+        <div class="bg-red-100 text-red-700 p-4 rounded">
+            {{ errorMessages|first }}
+        </div>
+    {% endif %}
+
+    <!-- Tableau des réservations -->
+    <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+        <thead>
+            <tr class="bg-orange-600 text-white">
+                <th class="px-4 py-2 text-left">Utilisateur</th>
+                <th class="px-4 py-2 text-left">Voiture</th>
+                <th class="px-4 py-2 text-left">Date de début</th>
+                <th class="px-4 py-2 text-left">Durée de la réservation (en jours)</th>
+                <th class="px-4 py-2 text-left">Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+                <tr class="border-b border-gray-300">
+                    <td class="px-4 py-2">
+                        <a href="{{ path('admin_users', { userId: reservation.getUser.id }) }}" class="text-blue-600 hover:text-blue-800">
+                            {{reservation.getUser.email}}
+                        </a>
+                    </td>
+                    <td class="px-4 py-2">
+                        <a href="{{ path('admin_cars', { carId: reservation.getCar.id }) }}" class="text-blue-600 hover:text-blue-800">
+                            {{reservation.getCar.getModel.name}}
+                        </a>
+                    </td>
+                    <td class="px-4 py-2">{{reservation.beginningDate.format("Y-m-d")}}</td>
+                    <td class="px-4 py-2">{{reservation.getDaysDuration}}</td>
+                    <td class="px-4 py-2">{{reservation.getStatus.value}}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="px-4 py-2 text-center text-gray-500">Aucune réservation trouvée</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

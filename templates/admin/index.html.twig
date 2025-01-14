@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .button-link { 
+        display: inline-block; 
+        text-align: center; 
+        padding: 1rem 2rem; 
+        border-radius: 0.5rem; 
+        font-size: 1.125rem; 
+        font-weight: 600; 
+        text-decoration: none; 
+        transition: background-color 0.3s ease, color 0.3s ease; 
+    }
+    .button-link-primary { 
+        background-color: #f97316; 
+        color: white; 
+    }
+    .button-link-primary:hover { 
+        background-color: #ea580c; 
+    }
+    .button-link-secondary { 
+        background-color: #3b82f6; 
+        color: white; 
+    }
+    .button-link-secondary:hover { 
+        background-color: #2563eb; 
+    }
+    .button-link-danger { 
+        background-color: #ef4444; 
+        color: white; 
+    }
+    .button-link-danger:hover { 
+        background-color: #dc2626; 
+    }
+</style>
+
+<div class="example-wrapper">
+    <div class="mt-8 space-y-4">
+        <a href="{{ path('admin_users') }}" class="button-link button-link-primary block w-full text-center">
+            Gestion des utilisateurs
+        </a>
+        <a href="{{ path('admin_cars') }}" class="button-link button-link-secondary block w-full text-center">
+            Gestion des véhicules
+        </a>
+        <a href="{{ path('admin_reservations') }}" class="button-link button-link-danger block w-full text-center">
+            Gestions des réservations
+        </a>
+    </div>
+</div>
+{% endblock %}

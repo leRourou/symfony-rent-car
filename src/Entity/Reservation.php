@@ -94,4 +94,9 @@ class Reservation
 
         return $this;
     }
+
+    public function getDaysDuration(): int
+    {
+        return $this->beginningDate->diff($this->endingDate)->days;
+    }
 }

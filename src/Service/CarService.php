@@ -14,10 +14,10 @@ class CarService
 
     public function getAllCars()
     {
-        return $this->carRepository->findAllCars();
+        return $this->carRepository->findAll();
     }
 
-    public function getCarById($id)
+    public function getCarById($id): mixed
     {
         return $this->carRepository->findCarById($id);
     }

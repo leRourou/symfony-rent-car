@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Repository\Searchable;
 use App\Entity\Reservation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -9,11 +10,22 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Reservation>
  */
-class ReservationRepository extends ServiceEntityRepository
+class ReservationRepository extends ServiceEntityRepository implements Searchable
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Reservation::class);
+    }
+
+    public function search(
+        $limit = 10,
+        $searchTerm = null
+    ) {
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     public function findReservedDays(int $carId, int $month, int $year): array

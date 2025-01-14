@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des véhicules{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+
+    {% set successMessages = app.flashes('success') %}
+    {% set errorMessages = app.flashes('error') %}
+
+    {% if successMessages %}
+        <div class="bg-green-100 text-green-700 p-4 rounded">
+            {{ successMessages|first }}
+        </div>
+    {% endif %}
+
+    {% if errorMessages %}
+        <div class="bg-red-100 text-red-700 p-4 rounded">
+            {{ errorMessages|first }}
+        </div>
+    {% endif %}
+
+    <!-- Barre de recherche -->
+    <div class="mb-4">
+        <form method="get" action="{{ path('admin_cars') }}" class="flex">
+            <input type="text" name="search" placeholder="Rechercher des véhicules..." 
+                class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-orange-400" 
+                value="{{ app.request.get('search')|default('') }}">
+            <button type="submit" 
+                class="ml-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                Recherche
+            </button>
+        </form>
+    </div>
+
+    <!-- Tableau des véhicules -->
+    <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+        <thead>
+            <tr class="bg-orange-600 text-white">
+                <th class="px-4 py-2 text-left">Modèle</th>
+                <th class="px-4 py-2 text-left">Immatriculation</th>
+                <th class="px-4 py-2 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for car in cars %}
+                <tr class="border-b border-gray-300">
+                    <td class="px-4 py-2">{{ car.getModel.name }}</td>
+                    <td class="px-4 py-2">{{ car.registrationNumber }}</td>
+                    <td class="px-4 py-2">                        
+                        <a href="{{ path('admin_reservations', { carId: car.id }) }}" class="text-blue-600 hover:text-blue-800">
+                            Voir les réservations
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="px-4 py-2 text-center text-gray-500">Aucun véhicule trouvé</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

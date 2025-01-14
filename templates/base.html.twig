@@ -28,6 +28,9 @@
                             <li><a href="{{ path('app_login') }}" class="hover:underline">Connexion</a></li>
                             <li><a href="{{ path('app_register') }}" class="hover:underline">S'incrire</a></li>
                         {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li><a href="{{ path('admin_dashboard') }}" class="hover:underline">Admin</a></li>
+                        {% endif %}
                     </ul>
                 </nav>
             </div>
