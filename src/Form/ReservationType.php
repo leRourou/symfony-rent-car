@@ -20,13 +20,13 @@ class ReservationType extends AbstractType
             ->add('beginningDate', DateType::class, [
                 'widget' => 'single_text',
                 'label' => false,
-                'required' => false,
+                'required' => true,
                 'attr' => ['style' => 'display:none'], 
             ])
             ->add('endingDate', DateType::class, [
                 'widget' => 'single_text',
                 'label' => false,
-                'required' => false,
+                'required' => true,
                 'attr' => ['style' => 'display:none'],
             ]);
     }

@@ -13,36 +13,40 @@
     {% endfor %}
 
 {{ form_start(form) }}
-    <div class="space-y-4">
-        <label for="reservation-dates" class="block text-sm font-medium text-gray-700">Dates de réservation</label>
-        <input 
-            type="text" 
-            id="reservation-dates" 
-            class="form-control w-full border-gray-300 rounded" 
-            placeholder="Sélectionnez une plage de dates">
-    </div>
+<div class="space-y-4">
+    <label for="reservation-dates" class="block text-sm font-medium text-gray-700">Dates de réservation</label>
+    <input 
+        required
+        type="text" 
+        id="reservation-dates" 
+        class="form-control w-full border-gray-300 rounded" 
+        placeholder="Sélectionnez une plage de dates">
+</div>
 
-<input type="hidden" id="beginningDateHidden" name="reservation[beginningDate]">
-<input type="hidden" id="endingDateHidden" name="reservation[endingDate]">
+{{ form_row(form.beginningDate, {'attr': {'type': 'hidden'}}) }}
+{{ form_row(form.endingDate, {'attr': {'type': 'hidden'}}) }}
+{{ form_errors(form.beginningDate) }}
+{{ form_errors(form.endingDate) }}
 
-    <button type="submit" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded">
-        Confirmer la réservation
-    </button>
-    {{ form_end(form) }}
+<button type="submit" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded">
+    Confirmer la réservation
+</button>
+{{ form_end(form) }}
 </div>
 
 <script>
-    flatpickr("#reservation-dates", {
-        mode: "range", 
-        dateFormat: "Y-m-d",
-        minDate: "today",
-        locale: "fr",
-        onChange: function(selectedDates) {
-            if (selectedDates.length === 2) {
-                document.getElementById("beginningDateHidden").value = selectedDates[0].toISOString().split('T')[0];
-                document.getElementById("endingDateHidden").value = selectedDates[1].toISOString().split('T')[0];
-            }
+flatpickr("#reservation-dates", {
+    mode: "range", 
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    locale: "fr",
+    onChange: function(selectedDates) {
+        if (selectedDates.length === 2) {
+            const formatDate = (date) => date.toLocaleDateString('fr-CA');
+            document.querySelector("input[name='reservation[beginningDate]']").value = formatDate(selectedDates[0]);
+            document.querySelector("input[name='reservation[endingDate]']").value = formatDate(selectedDates[1]);
         }
-    });
+    }
+});
 </script>
 {% endblock %}

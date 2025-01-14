@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ReservationController extends AbstractController
 {
-    #[Route('/reserve', name: 'app_reserve')]
+    #[Route('/', name: 'app_reserve')]
     public function reservePage(CarService $carService, ReservationService $reservationService): Response
     {
         $cars = $carService->getAllCars();
@@ -48,6 +48,10 @@ class ReservationController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): Response {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+        
         $car = $carRepository->find($carId);
         if (!$car) {
             throw $this->createNotFoundException('Model non trouvé');
@@ -61,30 +65,11 @@ class ReservationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $dates = $request->request->get('reservation');
-            
-            if ($form->isSubmitted() && $form->isValid()) {
-                $dates = $request->request->get('reservation');
-                
-                if (!empty($dates['beginningDate']) && !empty($dates['endingDate'])) {
-                    try {
-                        $beginningDate = new \DateTime($dates['beginningDate']);
-                        $endingDate = new \DateTime($dates['endingDate']);
-                        $reservation->setBeginningDate($beginningDate);
-                        $reservation->setEndingDate($endingDate);
-            
-                        $entityManager->persist($reservation);
-                        $entityManager->flush();
-            
-                        $this->addFlash('success', 'Réservation réussie !');
-                        return $this->redirectToRoute('app_reserve');
-                    } catch (\Exception $e) {
-                        $this->addFlash('error', 'Les dates fournies sont invalides.');
-                    }
-                } else {
-                    $this->addFlash('error', 'Les dates sont obligatoires.');
-                }
-            }
+            $entityManager->persist($reservation);
+            $entityManager->flush();
+        
+            $this->addFlash('success', 'Réservation réussie !');
+            return $this->redirectToRoute('app_reserve');
         }
 
         return $this->render('reservation/reserve.html.twig', [

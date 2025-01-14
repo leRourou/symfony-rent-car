@@ -7,11 +7,11 @@
         <div class="bg-white p-8 rounded shadow-md w-full max-w-md lg:max-w-lg">
             {% if app.user %}
                 <div class="bg-orange-100 text-orange-700 p-4 rounded">
-                    You are logged in as <strong>{{ app.user.userIdentifier }}</strong>,
+                    Vous êtes connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>,
                     <form method="post" action="{{ path('app_logout') }}" class="mt-4">
                         <button type="submit" 
                             class="w-full bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
-                            Logout
+                            Déconnexion
                         </button>
                     </form>
                 </div>
@@ -23,7 +23,7 @@
                         </div>
                     {% endif %}
 
-                    <h1 class="text-xl font-semibold text-gray-700">Please sign in</h1>
+                    <h1 class="text-xl font-semibold text-gray-700">Veuillez vous connecter</h1>
 
                     <div>
                         <label for="username" class="block text-sm font-medium text-gray-700">Email</label>
@@ -33,7 +33,7 @@
                     </div>
 
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
                         <input type="password" name="_password" id="password" 
                             class="mt-1 block w-full px-4 py-3 border border-orange-400 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500" 
                             autocomplete="current-password" required>
@@ -43,17 +43,17 @@
 
                     <div class="flex items-center">
                         <input type="checkbox" name="_remember_me" id="_remember_me" class="h-4 w-4 text-orange-600 border-gray-300 rounded">
-                        <label for="_remember_me" class="ml-2 block text-sm text-gray-900">Remember me</label>
+                        <label for="_remember_me" class="ml-2 block text-sm text-gray-900">Se souvenir de moi</label>
                     </div>
 
                     <button type="submit" 
                         class="w-full bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
-                        Log in
+                        Se connecter
                     </button>
 
                     <a href="{{ path('app_register') }}" 
                         class="w-full block text-center bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
-                        I don't have an account yet
+                        Je n'ai pas encore de compte
                     </a>
                 </form>
             {% endif %}
