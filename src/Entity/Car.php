@@ -25,6 +25,9 @@ class Car
     #[ORM\Column]
     private ?bool $canBeRent = null;
 
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    private ?float $price = null;
+
     /**
      * @var Collection<int, Reservation>
      */
@@ -81,6 +84,18 @@ class Car
         return $this;
     }
 
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?float $price): static
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Reservation>
      */
@@ -102,7 +117,6 @@ class Car
     public function removeReservation(Reservation $reservation): static
     {
         if ($this->reservations->removeElement($reservation)) {
-            // set the owning side to null (unless already changed)
             if ($reservation->getCar() === $this) {
                 $reservation->setCar(null);
             }

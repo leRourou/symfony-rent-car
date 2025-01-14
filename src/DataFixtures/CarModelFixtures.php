@@ -10,58 +10,38 @@ class CarModelFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-
         $models = [
             // Peugeot
-            'Peugeot 206',
-            'Peugeot 207',
-            'Peugeot 208',
-            'Peugeot 308',
-            'Peugeot 3008',
+            'Peugeot' => ['206', '207', '208', '308', '3008'],
 
             // Toyota
-            'Toyota Corolla',
-            'Toyota Yaris',
-            'Toyota Camry',
-            'Toyota RAV4',
-            'Toyota Hilux',
+            'Toyota' => ['Corolla', 'Yaris', 'Camry', 'RAV4', 'Hilux'],
 
             // Renault
-            'Renault Clio',
-            'Renault Mégane',
-            'Renault Captur',
-            'Renault Kadjar',
-            'Renault Zoe',
+            'Renault' => ['Clio', 'Mégane', 'Captur', 'Kadjar', 'Zoe'],
 
             // Volkswagen
-            'Volkswagen Golf',
-            'Volkswagen Passat',
-            'Volkswagen Tiguan',
-            'Volkswagen Polo',
-            'Volkswagen ID.4',
+            'Volkswagen' => ['Golf', 'Passat', 'Tiguan', 'Polo', 'ID.4'],
 
             // BMW
-            'BMW Série 1',
-            'BMW Série 3',
-            'BMW Série 5',
-            'BMW X1',
-            'BMW X3',
+            'BMW' => ['Série 1', 'Série 3', 'Série 5', 'X1', 'X3'],
 
             // Audi
-            'Audi A3',
-            'Audi A4',
-            'Audi A6',
-            'Audi Q3',
-            'Audi Q5',
+            'Audi' => ['A3', 'A4', 'A6', 'Q3', 'Q5'],
         ];
 
-        for ($i = 0; $i < count($models); ++$i) {
-            $model = new CarModel();
+        $i = 0;
 
-            $model->setName($models[$i]);
+        foreach ($models as $brand => $modelNames) {
+            foreach ($modelNames as $modelName) {
+                $model = new CarModel();
+                $model->setName($modelName);
+                $model->setBrand($brand);
 
-            $manager->persist($model);
-            $this->addReference('model_' . $i, $model);
+                $manager->persist($model);
+                $this->addReference('model_' . $i, $model);
+                $i++;
+            }
         }
 
         $manager->flush();

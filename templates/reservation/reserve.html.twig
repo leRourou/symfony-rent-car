@@ -12,16 +12,18 @@
         </div>
     {% endfor %}
 
-    {{ form_start(form) }}
+{{ form_start(form) }}
     <div class="space-y-4">
         <label for="reservation-dates" class="block text-sm font-medium text-gray-700">Dates de réservation</label>
         <input 
             type="text" 
             id="reservation-dates" 
-            name="reservation[dates]" 
             class="form-control w-full border-gray-300 rounded" 
             placeholder="Sélectionnez une plage de dates">
     </div>
+
+<input type="hidden" id="beginningDateHidden" name="reservation[beginningDate]">
+<input type="hidden" id="endingDateHidden" name="reservation[endingDate]">
 
     <button type="submit" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded">
         Confirmer la réservation
@@ -34,7 +36,13 @@
         mode: "range", 
         dateFormat: "Y-m-d",
         minDate: "today",
-        locale: "fr", 
+        locale: "fr",
+        onChange: function(selectedDates) {
+            if (selectedDates.length === 2) {
+                document.getElementById("beginningDateHidden").value = selectedDates[0].toISOString().split('T')[0];
+                document.getElementById("endingDateHidden").value = selectedDates[1].toISOString().split('T')[0];
+            }
+        }
     });
 </script>
 {% endblock %}
