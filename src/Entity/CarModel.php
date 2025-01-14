@@ -6,6 +6,7 @@ use App\Repository\CarModelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: CarModelRepository::class)]
 class CarModel
@@ -22,6 +23,7 @@ class CarModel
      * @var Collection<int, Car>
      */
     #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'model')]
+    #[Ignore]
     private Collection $cars;
 
     public function __construct()

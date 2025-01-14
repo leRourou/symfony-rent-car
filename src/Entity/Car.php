@@ -6,6 +6,7 @@ use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 class Car
@@ -19,15 +20,16 @@ class Car
     private ?string $year = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $registration_number = null;
+    private ?string $registrationNumber = null;
 
     #[ORM\Column]
-    private ?bool $can_be_rent = null;
+    private ?bool $canBeRent = null;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'car', orphanRemoval: true)]
+    #[Ignore]
     private Collection $reservations;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
@@ -57,24 +59,24 @@ class Car
 
     public function getRegistrationNumber(): ?string
     {
-        return $this->registration_number;
+        return $this->registrationNumber;
     }
 
-    public function setRegistrationNumber(string $registration_number): static
+    public function setRegistrationNumber(string $registrationNumber): static
     {
-        $this->registration_number = $registration_number;
+        $this->registrationNumber = $registrationNumber;
 
         return $this;
     }
 
     public function isCanBeRent(): ?bool
     {
-        return $this->can_be_rent;
+        return $this->canBeRent;
     }
 
-    public function setCanBeRent(bool $can_be_rent): static
+    public function setCanBeRent(bool $canBeRent): static
     {
-        $this->can_be_rent = $can_be_rent;
+        $this->canBeRent = $canBeRent;
 
         return $this;
     }
