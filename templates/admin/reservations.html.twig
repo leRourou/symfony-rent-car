@@ -50,9 +50,9 @@
                 </div>
                 {% if selectedReservation.isPending %}
                     <div class="flex justify-end space-x-2 mt-4">
-                        <form action="{{ path('admin_reservation_confirm', { id: selectedReservation.id }) }}" method="post">
-                            <button class="bg-orange-600 text-white px-2 py-1 rounded-lg">Confirmer</button>
-                            <button class="bg-gray-400 text-white px-2 py-1 rounded-lg">Annuler</button>
+                        <form action="{{ path('admin_reservation_confirm', app.request.query.all|merge({id: selectedReservation.id})) }}" method="post">
+                            <button type="submit" name="action" value="confirm" class="bg-orange-600 text-white px-2 py-1 rounded-lg">Confirmer</button>
+                            <button type="submit" name="action" value="cancel" class="bg-gray-400 text-white px-2 py-1 rounded-lg">Annuler</button>
                         </form>
                     </div>
                 {% endif %}
@@ -71,7 +71,7 @@
         </thead>
         <tbody>
             {% for reservation in reservations %}
-                <tr class="border-b border-gray-300 cursor-pointer {% if selectedReservation and selectedReservation.id == reservation.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_reservations', { selected: reservation.id }) }}'">
+                <tr class="border-b border-gray-300 cursor-pointer {% if selectedReservation and selectedReservation.id == reservation.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_reservations', app.request.query.all|merge({'selected': reservation.id})) }}'">
                     <td class="px-4 py-2">{{reservation.getUser.email}}</td>
                     <td class="px-4 py-2">{{reservation.getCar.getModel.name}}</td>
                     <td class="px-4 py-2">{{reservation.getStatusValue}}</td>
@@ -83,5 +83,6 @@
             {% endfor %}
         </tbody>
     </table>
+    {% include "components/pagination.html.twig" with { currentPage: app.request.get('page')|default(1), route: 'admin_reservations', maxpage: maxPage, itemsCount: itemsCount } %}
 </div>
 {% endblock %}

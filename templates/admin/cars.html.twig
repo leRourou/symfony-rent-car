@@ -10,7 +10,7 @@
 
 <div class="example-wrapper">
 
-    {% include 'components/searchbar.html.twig' with { route: 'admin_cars', itemName: 'réservations' } %}
+    {% include 'components/searchbar.html.twig' with { route: 'admin_cars', itemName: 'voitures' } %}
 
     <!-- Détails du véhicule sélectionné -->
     {% if selectedCar %}
@@ -41,7 +41,7 @@
                 </div>
                 <div class="flex justify-between items-center">
                     <p class="font-bold">Prix par jour</p>
-                    <p>A définir</p>
+                    <p>{{ selectedCar.price }}€</p>
                 </div>
                 <div class="flex justify-between items-center">
                     <p class="font-bold">Nombre de réservations</p>

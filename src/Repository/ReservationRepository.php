@@ -22,11 +22,27 @@ class ReservationRepository extends ServiceEntityRepository implements Searchabl
         $page = 1,
         $searchTerm = null
     ) {
-        $qb = $this->createQueryBuilder('r');
+        $qb = $this->createQueryBuilder('c');
+        $offset = ($page - 1) * $limit;
 
-        return $qb->setMaxResults($limit)
+        $data = $qb->setMaxResults($limit)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
+
+        $count = 0;
+        if (count($data) > 0) {
+            $count = $qb->select('COUNT(c.id)')
+                ->setFirstResult(null)
+                ->setMaxResults(null)
+                ->getQuery()
+                ->getSingleScalarResult();
+        }
+
+        return [
+            'data' => $data,
+            'count' => $count
+        ];
     }
 
     public function findReservedDays(int $carId, int $month, int $year): array

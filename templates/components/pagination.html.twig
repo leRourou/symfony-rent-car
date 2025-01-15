@@ -17,27 +17,13 @@
     </div>
     {% set startPage = max(1, currentPage - 2) %}
     {% set endPage = min(maxpage, currentPage + 2) %}
-    
-    {% if currentPage <= 2 %}
-        {% set startPage = 1 %}
-        {% set endPage = min(5, maxpage) %}
-    {% endif %}
-    
-    {% if currentPage >= maxpage - 1 %}
-        {% set startPage = max(1, maxpage - 4) %}
-        {% set endPage = maxpage %}
-    {% endif %}
-    
     {% if startPage < endPage %}
     <nav>
         <ul class="flex items-center -space-x-px h-10 text-base">
-            <!-- Bouton "Première page" avec double chevron -->
+            <!-- Bouton "Première page" -->
             <li>
                 <a href="{{ currentPage > 1 ? path(route, app.request.query.all|merge({'page': 1})) : '#' }}" class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-orange-100 hover:text-orange-700 {{ currentPage <= 1 ? 'cursor-not-allowed opacity-50' : '' }}">
-                    <span class="sr-only">First</span>
-                    <svg class="w-4 h-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1 5 5l4 4M5 1 1 5l4 4"/>
-                    </svg>
+                    << 
                 </a>
             </li>
             <!-- Bouton "Précédent" -->
@@ -68,10 +54,7 @@
             <!-- Bouton "Dernière page" -->
             <li>
                 <a href="{{ currentPage < maxpage ? path(route, app.request.query.all|merge({'page': maxpage})) : '#' }}" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-orange-100 hover:text-orange-700 {{ currentPage >= maxpage ? 'cursor-not-allowed opacity-50' : '' }}">
-                    <span class="sr-only">Last</span>
-                    <svg class="w-4 h-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 9l4-4-4-4m4 8 4-4-4-4"/>
-                    </svg>
+                    >> 
                 </a>
             </li>
         </ul>

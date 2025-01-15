@@ -37,9 +37,26 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 ->setParameter('searchTerm', '%' . $searchTerm . '%');
         }
 
-        return $qb->setMaxResults($limit)
+        $offset = ($page - 1) * $limit;
+
+        $data = $qb->setMaxResults($limit)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
+
+        $count = 0;
+        if (count($data) > 0) {
+            $count = $qb->select('COUNT(u.id)')
+                ->setFirstResult(null)
+                ->setMaxResults(null)
+                ->getQuery()
+                ->getSingleScalarResult();
+        }
+
+        return [
+            'data' => $data,
+            'count' => $count
+        ];
     }
 
 

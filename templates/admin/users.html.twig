@@ -19,8 +19,12 @@
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold text-orange-600">{{ selectedUser.email }}</h1>
                 <div class="space-x-2">
-                    <a class="text-orange-600 hover:text-orange-800">✏️</a>
-                    <a class="text-orange-600 hover:text-orange-800">🗑️</a>
+                    <form method='post' action="{{ path('admin_user_edit', {id: selectedUser.id}) }}" class="inline">
+                        <button class="text-orange-600 hover:text-orange-800" type='submit'>✏️</button>
+                    </form>
+                    <form method='post' action="{{ path('admin_user_delete', {id: selectedUser.id}) }}" class="inline">
+                        <button class="text-orange-600 hover:text-orange-800" type='submit'>🗑️</button>
+                    </form>
                 </div>
             </div>
             <div class="w-full gap-2">
@@ -37,6 +41,11 @@
                     <p>{{ selectedUser.getReservations|length }}</p>
                 </div>
             </div>
+            <div class="flex flex-col gap-2 mt-2">
+                {% for reservation in selectedUser.getReservations %}
+                    {% include "admin/reservation_small.html.twig" with { reservation: reservation } %}
+                {% endfor %}
+            </div>
         </div>
     {% endif %}
 
@@ -51,7 +60,7 @@
         </thead>
         <tbody>
             {% for user in users %}
-                <tr class="border-b border-gray-300 cursor-pointer {% if selectedUser and selectedUser.id == user.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_users', { selected: user.id }) }}'">
+                <tr class="border-b border-gray-300 cursor-pointer {% if selectedUser and selectedUser.id == user.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_users', app.request.query.all|merge({'selected': user.id})) }}'">
                     <td class="px-4 py-2">{{ user.firstname }}</td>
                     <td class="px-4 py-2">{{ user.lastname }}</td>
                     <td class="px-4 py-2">{{ user.email }}</td>
@@ -63,5 +72,6 @@
             {% endfor %}
         </tbody>
     </table>
+    {% include "components/pagination.html.twig" with { currentPage: app.request.get('page')|default(1), route: 'admin_users', maxpage: maxPage, itemsCount: itemsCount } %}
 </div>
 {% endblock %}

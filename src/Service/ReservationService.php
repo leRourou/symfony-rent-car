@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\ReservationStatus;
 use App\Repository\ReservationRepository;
 
 class ReservationService
@@ -39,5 +40,38 @@ class ReservationService
         setlocale(LC_TIME, 'fr_FR.UTF-8');
         $formatter = new \IntlDateFormatter('fr_FR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE, null, null, 'MMMM');
         return ucfirst($formatter->format(mktime(0, 0, 0, $month, 10)));
+    }
+
+    public function cancelReservation($id)
+    {
+        $reservation = $this->reservationRepository->find($id);
+
+        if (!$reservation) {
+            throw new \Exception('Réservation introuvable');
+        }
+
+
+        if ($reservation->getStatus() === 'canceled') {
+            throw new \Exception('Réservation déjà annulée');
+        }
+
+        $reservation->setStatus(ReservationStatus::Canceled);
+        $this->reservationRepository->save($reservation);
+    }
+
+    public function confirmReservation($id)
+    {
+        $reservation = $this->reservationRepository->find($id);
+
+        if (!$reservation) {
+            throw new \Exception('Réservation introuvable');
+        }
+
+        if ($reservation->getStatus() === 'confirmed') {
+            throw new \Exception('Réservation déjà confirmée');
+        }
+
+        $reservation->setStatus(ReservationStatus::Confirmed);
+        $this->reservationRepository->save($reservation);
     }
 }

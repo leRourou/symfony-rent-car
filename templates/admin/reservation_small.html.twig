@@ -1,0 +1,4 @@
+<a href="{{ path('admin_reservations', {selected: reservation.id }) }}" class="flex justify-between bg-orange-100 p-2 rounded-lg">
+    <p>{{ reservation.getBeginningDate.format('d-m-Y')}} - {{ reservation.getCar.getModel.brand }} {{ reservation.getCar.getModel.name }}</p>
+    <p>{{ reservation.getStatusValue}}</p>
+</a>
