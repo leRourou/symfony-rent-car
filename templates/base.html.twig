@@ -41,11 +41,13 @@
                         {% endif %}
                         {% if app.user %}
                             <li><a href="/profile/edit" class="hover:underline">Profil</a></li>
+                            <li> <a href="/my-reservations" class="hover:underline">Mes réservations </a></li>
                             <li>
                                 <form method="post" action="{{ path('app_logout') }}">
                                     <button type="submit" class="hover:underline">Déconnexion</button>
                                 </form>
                             </li>
+
                         {% else %}
                             <li><a href="{{ path('app_login') }}" class="hover:underline">Connexion</a></li>
                             <li><a href="{{ path('app_register') }}" class="hover:underline">Inscription</a></li>

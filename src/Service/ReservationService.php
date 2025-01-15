@@ -29,7 +29,6 @@ class ReservationService
         }
         return $reserved;
     }
-
     public function getNumberOfDays($month, $year)
     {
         return cal_days_in_month(CAL_GREGORIAN, $month, $year);
@@ -40,6 +39,14 @@ class ReservationService
         setlocale(LC_TIME, 'fr_FR.UTF-8');
         $formatter = new \IntlDateFormatter('fr_FR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE, null, null, 'MMMM');
         return ucfirst($formatter->format(mktime(0, 0, 0, $month, 10)));
+    }
+
+    public function getReservationsByUser($user)
+    {
+        $reservations = $this->reservationRepository->findBy(['user' => $user]);
+        foreach ($reservations as $reservation) {
+        }
+        return $reservations;
     }
 
     public function getAllReservedDays(int $carId): array

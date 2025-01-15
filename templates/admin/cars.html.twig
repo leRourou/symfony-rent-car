@@ -22,30 +22,35 @@
                     <a class="text-orange-600 hover:text-orange-800">🗑️</a>
                 </div>
             </div>
-            <div class="w-full gap-2">
-                <div class="flex justify-between items-center">
-                    <p class="font-bold">Marque</p>
-                    <p>{{ selectedCar.getModel.brand }}</p>
-                </div>
-                <div class="flex justify-between items-center">
-                    <p class="font-bold">Immatriculation</p>
-                    <p>{{ selectedCar.registrationNumber }}</p>
-                </div>
-                <div class="flex justify-between items-center">
-                    <p class="font-bold">Année de mise en circulation</p>
-                    <p>{{ selectedCar.year }}</p>
-                </div>
-                <div class="flex justify-between items-center">
-                    <p class="font-bold">Peux être réservé</p>
-                    <p>{{ selectedCar.isCanBeRent ? 'Oui' : 'Non' }}</p>
-                </div>
-                <div class="flex justify-between items-center">
-                    <p class="font-bold">Prix par jour</p>
-                    <p>{{ selectedCar.price }}€</p>
-                </div>
-                <div class="flex justify-between items-center">
-                    <p class="font-bold">Nombre de réservations</p>
-                    <p>{{ selectedCar.getReservations|length }}</p>
+            <div class="flex gap-2">
+                {% if selectedCar.getModel %}
+                    <img src="{{ selectedCar.getModel.imageUrl }}" alt="{{ selectedCar.getModel.name }}" class="w-full h-auto object-contain rounded">
+                {% endif %}
+                <div class="w-full gap-2">
+                    <div class="flex justify-between items-center">
+                        <p class="font-bold">Marque</p>
+                        <p>{{ selectedCar.getModel.brand }}</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="font-bold">Immatriculation</p>
+                        <p>{{ selectedCar.registrationNumber }}</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="font-bold">Année de mise en circulation</p>
+                        <p>{{ selectedCar.year }}</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="font-bold">Peux être réservé</p>
+                        <p>{{ selectedCar.isCanBeRent ? 'Oui' : 'Non' }}</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="font-bold">Prix par jour</p>
+                        <p>{{ selectedCar.price }}€</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="font-bold">Nombre de réservations</p>
+                        <p>{{ selectedCar.getReservations|length }}</p>
+                    </div>
                 </div>
             </div>
         </div>
