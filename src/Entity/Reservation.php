@@ -15,10 +15,10 @@ class Reservation
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $beginningDate = null;
+    private ?\DateTime $beginningDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $endingDate = null;
+    private ?\DateTime $endingDate = null;
 
     #[ORM\Column(enumType: ReservationStatus::class)]
     private ?ReservationStatus $status = null;
@@ -35,24 +35,24 @@ class Reservation
         return $this->id;
     }
 
-    public function getBeginningDate(): ?\DateTimeInterface
+    public function getBeginningDate(): ?\DateTime
     {
         return $this->beginningDate;
     }
 
-    public function setBeginningDate(\DateTimeInterface $beginning_date): static
+    public function setBeginningDate(\DateTime $beginning_date): static
     {
         $this->beginningDate = $beginning_date;
 
         return $this;
     }
 
-    public function getEndingDate(): ?\DateTimeInterface
+    public function getEndingDate(): ?\DateTime
     {
         return $this->endingDate;
     }
 
-    public function setEndingDate(\DateTimeInterface $ending_date): static
+    public function setEndingDate(\DateTime $ending_date): static
     {
         $this->endingDate = $ending_date;
 

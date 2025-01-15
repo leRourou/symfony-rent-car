@@ -19,6 +19,9 @@ class CarModel
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $brand = null;
+
     /**
      * @var Collection<int, Car>
      */
@@ -48,6 +51,18 @@ class CarModel
         return $this;
     }
 
+    public function getBrand(): ?string
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(string $brand): static
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Car>
      */
@@ -69,7 +84,6 @@ class CarModel
     public function removeCar(Car $car): static
     {
         if ($this->cars->removeElement($car)) {
-            // set the owning side to null (unless already changed)
             if ($car->getModel() === $this) {
                 $car->setModel(null);
             }
