@@ -4,6 +4,18 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
     <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>   
+        <script>
+        <script>
+    toastr.options = {
+        "closeButton": true,
+        "positionClass": "toast-bottom-right",
+        "timeOut": "3000"
+    };
+        </script>
+        </script>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <script src="https://cdn.tailwindcss.com"></script>
@@ -43,5 +55,17 @@
             </div>
         </header>
         {% block body %}{% endblock %}
+        <script>
+        if (typeof toastr !== 'undefined') {
+            {% for message in app.flashes('success') %}
+                toastr.success("{{ message|e('js') }}");
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                toastr.error("{{ message|e('js') }}");
+            {% endfor %}
+        } else {
+            console.error("Toastr is not loaded.");
+        }
+        </script>
     </body>
 </html>
