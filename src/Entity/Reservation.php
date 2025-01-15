@@ -81,6 +81,22 @@ class Reservation
         };
     }
 
+    public function isPending()
+    {
+        return $this->getStatus() == ReservationStatus::Pending;
+    }
+
+    public function isConfirmed()
+    {
+        return $this->getStatus() == ReservationStatus::Confirmed;
+    }
+
+    public function isCanceled()
+    {
+        return $this->getStatus() == ReservationStatus::Canceled;
+    }
+
+
     public function getUser(): ?User
     {
         return $this->user;

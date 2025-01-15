@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ReservationStatus;
 use App\Repository\CarRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\UserRepository;
@@ -83,6 +84,35 @@ class AdminController extends AbstractController
         return $this->render('admin/reservations.html.twig', [
             'reservations' => $reservations,
             'selectedReservation' => $selectedReservation
+        ]);
+    }
+
+    #[Route('/reservations/{id}/confirm', name: 'admin_reservation_confirm', methods: ['POST'])]
+    public function confirmReservation($id, ReservationRepository $reservationRepository): Response
+    {
+        $reservation = $reservationRepository->find($id);
+
+        if (!$reservation) {
+            $this->addFlash('error', 'Réservation introuvable');
+            return $this->redirectToRoute('admin_reservations');
+        }
+
+        if ($reservation->getStatus() === ReservationStatus::Confirmed) {
+            $this->addFlash('error', 'Réservation déjà confirmée');
+            return $this->redirectToRoute('admin_reservations');
+        }
+
+        if ($reservation->getStatus() === ReservationStatus::Canceled) {
+            $this->addFlash('error', 'Réservation déjà annulée');
+            return $this->redirectToRoute('admin_reservations');
+        }
+
+        $reservation->setStatus(ReservationStatus::Confirmed);
+        $reservationRepository->save($reservation);
+
+        $this->addFlash('success', 'Réservation confirmée');
+        return $this->redirectToRoute('admin_reservations', [
+            'selected' => $id
         ]);
     }
 }

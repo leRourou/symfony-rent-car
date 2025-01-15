@@ -11,17 +11,7 @@
 <div class="example-wrapper">
 
     <!-- Barre de recherche -->
-    <div class="mb-4">
-        <form method="get" action="{{ path('admin_users') }}" class="flex">
-            <input type="text" name="search" placeholder="Rechercher des utilisateurs..." 
-                class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-orange-400" 
-                value="{{ app.request.get('search')|default('') }}">
-            <button type="submit" 
-                class="ml-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500">
-                Recherche
-            </button>
-        </form>
-    </div>
+    {% include 'components/searchbar.html.twig' with { route: 'admin_users', itemName: 'utilisateurs' } %}
 
     <!-- Détails de l'utilisateur sélectionné -->
     {% if selectedUser %}

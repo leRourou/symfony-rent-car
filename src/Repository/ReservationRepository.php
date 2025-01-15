@@ -45,4 +45,10 @@ class ReservationRepository extends ServiceEntityRepository implements Searchabl
             ->getQuery()
             ->getResult();
     }
+
+    public function save($reservation)
+    {
+        $this->getEntityManager()->persist($reservation);
+        $this->getEntityManager()->flush();
+    }
 }
