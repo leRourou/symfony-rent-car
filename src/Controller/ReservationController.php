@@ -14,6 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
+
 
 class ReservationController extends AbstractController
 {
@@ -77,4 +79,34 @@ class ReservationController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/my-reservations', name: 'app_my_reservations')]
+    public function myReservations(ReservationService $reservationService): Response
+    {
+        $reservations = $reservationService->getReservationsByUser($this->getUser());
+        return $this->render('reservation/my_reservations.html.twig', [
+            'reservations' => $reservations,
+        ]);
+    }
+    #[Route('/delete-reservation/{id}', name: 'app_delete_reservation', methods: ['POST'])]
+    public function deleteReservation(Request $request, Reservation $reservation, EntityManagerInterface $em): Response
+    {
+        if (!$this->isCsrfTokenValid('delete_reservation_' . $reservation->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+            return $this->redirectToRoute('app_my_reservations');
+        }
+    
+        $em->remove($reservation);
+        $em->flush();
+    
+        $this->addFlash('success', 'La réservation a été supprimée avec succès.');
+    
+        return $this->redirectToRoute('app_my_reservations');
+    }
+    
+    
+    
+
+
+    
 }
