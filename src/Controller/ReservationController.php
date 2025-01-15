@@ -16,9 +16,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use App\Event\CarBookedEvent;
+use App\Listener\CarBookedListener;
+use App\Service\MailService;
 
 class ReservationController extends AbstractController
 {
+    private $eventDispatcher;
+    private $mailService;
+    public function __construct(EventDispatcherInterface $eventDispatcher, MailService $mailService)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+        $this->mailService = $mailService;
+    }
     #[Route('/', name: 'app_reserve')]
     public function reservePage(CarService $carService, ReservationService $reservationService): Response
     {
@@ -82,4 +93,22 @@ class ReservationController extends AbstractController
             'reservedDates' => $reservedDates,
         ]);
     }
+
+    #[Route('/testo', name: 'app_testo')]
+    public function test()
+    {
+        $bookingDetails = [
+            'carModel' => 'Tesla Model 3',
+            'customerName' => 'Alice Dupont',
+            'bookingDate' => '2025-01-15',
+        ];
+
+        $a = $this->mailService->sendEmail('arthur.le.devedec@gmail.com', 'Car booked', 'mails/test.html.twig', $bookingDetails);
+        $event = new CarBookedEvent($bookingDetails);
+
+        $this->eventDispatcher->dispatch($event, CarBookedEvent::NAME);
+
+        return new Response('Car booked and event dispatched!');
+    }
+
 }
