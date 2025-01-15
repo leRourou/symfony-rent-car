@@ -9,6 +9,10 @@
         {% for carData in cars %}
             <div class="border rounded-lg p-4 shadow">
                 <h2 class="text-lg font-bold">{{ carData.modelName }}</h2>
+                <img 
+                    src="{{ carData.car.model.imageUrl }}" 
+                    alt="Image du modèle {{ carData.modelName }}" 
+                    class="w-full h-48 object-cover rounded">
                 <p>Marque: {{ carData.brand }}</p>
                 <p>Prix: {{ carData.car.price }} €/jour</p>
                 <button 

@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Reservation;
+use App\Entity\Car;
 use App\Entity\ReservationStatus;
 use App\Form\ReservationType;
 use App\Service\CarService;
 use App\Service\ReservationService;
 use App\Repository\CarRepository;
+use App\Repository\ReservationRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,8 +23,6 @@ class ReservationController extends AbstractController
     public function reservePage(CarService $carService, ReservationService $reservationService): Response
     {
         $cars = $carService->getAllCars();
-        $currentMonth = (int)(new \DateTime())->format('m');
-        $currentYear = (int)(new \DateTime())->format('Y');
     
         $carsWithAvailability = [];
         foreach ($cars as $car) {
@@ -45,29 +45,33 @@ class ReservationController extends AbstractController
     public function reserve(
         int $carId,
         CarRepository $carRepository,
+        ReservationService $reservationService,
         Request $request,
         EntityManagerInterface $entityManager
     ): Response {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
-        
+
         $car = $carRepository->find($carId);
         if (!$car) {
-            throw $this->createNotFoundException('Model non trouvé');
+            throw $this->createNotFoundException('Voiture non trouvée');
         }
+
+        $reservedDates = $reservationService->getAllReservedDays($carId);
+
         $reservation = new Reservation();
         $reservation->setCar($car);
         $reservation->setUser($this->getUser());
         $reservation->setStatus(ReservationStatus::Pending);
-        
+
         $form = $this->createForm(ReservationType::class, $reservation);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($reservation);
             $entityManager->flush();
-        
+
             $this->addFlash('success', 'Réservation réussie !');
             return $this->redirectToRoute('app_reserve');
         }
@@ -75,6 +79,7 @@ class ReservationController extends AbstractController
         return $this->render('reservation/reserve.html.twig', [
             'car' => $car,
             'form' => $form->createView(),
+            'reservedDates' => $reservedDates,
         ]);
     }
 }

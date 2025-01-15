@@ -40,4 +40,23 @@ class ReservationService
         $formatter = new \IntlDateFormatter('fr_FR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE, null, null, 'MMMM');
         return ucfirst($formatter->format(mktime(0, 0, 0, $month, 10)));
     }
+
+    public function getAllReservedDays(int $carId): array
+    {
+        $reservations = $this->reservationRepository->findBy(['car' => $carId]);
+        $reservedDates = [];
+
+        foreach ($reservations as $reservation) {
+            $beginningDate = $reservation->getBeginningDate();
+            $endingDate = $reservation->getEndingDate();
+            $interval = new \DateInterval('P1D');
+            $dateRange = new \DatePeriod($beginningDate, $interval, $endingDate->modify('+1 day'));
+
+            foreach ($dateRange as $date) {
+                $reservedDates[] = $date->format('Y-m-d');
+            }
+        }
+
+        return array_values(array_unique($reservedDates));
+    }
 }
