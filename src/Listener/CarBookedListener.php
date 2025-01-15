@@ -1,21 +1,29 @@
 <?php
 
-namespace App\EventListener;
+namespace App\Listener;
 
 use App\Event\CarBookedEvent;
 use App\Service\MailService;
+use App\template\mails\test;
 
 class CarBookedListener
 {
+    private MailService $mailService;
 
-    private $mailer;
     public function __construct(MailService $mailService)
     {
         $this->mailService = $mailService;
     }
+
     public function onCarBooked(CarBookedEvent $event): void
     {
         $details = $event->getBookingDetails();
-        echo "Réservation enregistrée pour la voiture ID: " . $details['carId'];
+        $to = 'jpoulain58@gmail.com';
+        $subject = 'Bienvenue à bord !';
+        $template = 'mails/test.html.twig';
+        $context = [
+            'name' => 'Jean Dupont',
+        ];
+        $test = $this->mailService->sendEmail($to, $subject, $template, $context);
     }
 }
