@@ -20,5 +20,13 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    # Explicit declaration of the CarBookedListener service
+
+    # Explicit declaration of the TriggerCarBookedEventCommand service
+    App\Listener\CarBookedListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'car.booked', method: 'onCarBooked' }
+
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
