@@ -28,7 +28,6 @@ class ReservationService
         }
         return $reserved;
     }
-
     public function getNumberOfDays($month, $year)
     {
         return cal_days_in_month(CAL_GREGORIAN, $month, $year);
@@ -59,4 +58,11 @@ class ReservationService
 
         return array_values(array_unique($reservedDates));
     }
+    public function getReservationsByUser($user)
+    {
+        $reservations = $this->reservationRepository->findBy(['user' => $user]);
+        foreach($reservations as $reservation) {
+        }
+        return $reservations;
+    }   
 }
