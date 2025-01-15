@@ -24,6 +24,6 @@ class CarBookedListener
         $context = [
             'name' => 'Jean Dupont',
         ];
-        $test = $this->mailService->sendEmail($to, $subject, $template, $context);
+        $this->mailService->sendEmail($to, $subject, $template, $context);
     }
 }

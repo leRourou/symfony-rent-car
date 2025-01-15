@@ -28,6 +28,7 @@ class ReservationService
         }
         return $reserved;
     }
+
     public function getNumberOfDays($month, $year)
     {
         return cal_days_in_month(CAL_GREGORIAN, $month, $year);
@@ -40,31 +41,6 @@ class ReservationService
         return ucfirst($formatter->format(mktime(0, 0, 0, $month, 10)));
     }
 
-    public function getAllReservedDays(int $carId): array
-    {
-        $reservations = $this->reservationRepository->findBy(['car' => $carId]);
-        $reservedDates = [];
-
-        foreach ($reservations as $reservation) {
-            $beginningDate = $reservation->getBeginningDate();
-            $endingDate = $reservation->getEndingDate();
-            $interval = new \DateInterval('P1D');
-            $dateRange = new \DatePeriod($beginningDate, $interval, $endingDate->modify('+1 day'));
-
-            foreach ($dateRange as $date) {
-                $reservedDates[] = $date->format('Y-m-d');
-            }
-        }
-
-        return array_values(array_unique($reservedDates));
-    }
-    public function getReservationsByUser($user)
-    {
-        $reservations = $this->reservationRepository->findBy(['user' => $user]);
-        foreach($reservations as $reservation) {
-        }
-        return $reservations;
-    }   
     public function getAllReservedDays(int $carId): array
     {
         $reservations = $this->reservationRepository->findBy(['car' => $carId]);
