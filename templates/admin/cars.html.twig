@@ -10,35 +10,7 @@
 
 <div class="example-wrapper">
 
-    {% set successMessages = app.flashes('success') %}
-    {% set errorMessages = app.flashes('error') %}
-
-    {% if successMessages %}
-        <div class="bg-green-100 text-green-700 p-4 rounded">
-            {{ successMessages|first }}
-        </div>
-    {% endif %}
-
-    {% if errorMessages %}
-        <div class="bg-red-100 text-red-700 p-4 rounded">
-            {{ errorMessages|first }}
-        </div>
-    {% endif %}
-
-    <twig:title title="Liste des véhicules" />
-
-    <!-- Barre de recherche -->
-    <div class="mb-4">
-        <form method="get" action="{{ path('admin_cars') }}" class="flex">
-            <input type="text" name="search" placeholder="Rechercher des véhicules..." 
-                class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-orange-400" 
-                value="{{ app.request.get('search')|default('') }}">
-            <button type="submit" 
-                class="ml-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500">
-                Recherche
-            </button>
-        </form>
-    </div>
+    {% include 'components/searchbar.html.twig' with { route: 'admin_cars', itemName: 'réservations' } %}
 
     <!-- Détails du véhicule sélectionné -->
     {% if selectedCar %}
@@ -51,6 +23,10 @@
                 </div>
             </div>
             <div class="w-full gap-2">
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Marque</p>
+                    <p>{{ selectedCar.getModel.brand }}</p>
+                </div>
                 <div class="flex justify-between items-center">
                     <p class="font-bold">Immatriculation</p>
                     <p>{{ selectedCar.registrationNumber }}</p>
@@ -79,13 +55,15 @@
     <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
         <thead>
             <tr class="bg-orange-600 text-white">
+                <th class="px-4 py-2 text-left">Marque</th>
                 <th class="px-4 py-2 text-left">Modèle</th>
                 <th class="px-4 py-2 text-left">Immatriculation</th>
             </tr>
         </thead>
         <tbody>
             {% for car in cars %}
-            <tr class="border-b border-gray-300 cursor-pointer {% if selectedCar and selectedCar.id == car.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_cars', { selected: car.id }) }}'">
+            <tr class="border-b border-gray-300 cursor-pointer {% if selectedCar and selectedCar.id == car.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_cars', app.request.query.all|merge({'selected': car.id})) }}'">
+                <td class="px-4 py-2">{{ car.getModel.brand }}</td>
                 <td class="px-4 py-2">{{ car.getModel.name }}</td>
                 <td class="px-4 py-2">{{ car.registrationNumber }}</td>
             </tr>
@@ -96,5 +74,6 @@
             {% endfor %}
         </tbody>
     </table>
+    {% include "components/pagination.html.twig" with { currentPage: app.request.get('page')|default(1), route: 'admin_cars', maxpage: maxPage, itemsCount: itemsCount } %}
 </div>
 {% endblock %}

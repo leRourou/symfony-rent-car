@@ -19,6 +19,7 @@ class CarRepository extends ServiceEntityRepository implements Searchable
 
     public function search(
         $limit = 10,
+        $page = 1,
         $searchTerm = null
     ) {
         $qb = $this->createQueryBuilder('c');
@@ -27,12 +28,31 @@ class CarRepository extends ServiceEntityRepository implements Searchable
             $qb->join('c.model', 'm')
                 ->where('c.registrationNumber LIKE :searchTerm')
                 ->orWhere('m.name LIKE :searchTerm')
+                ->orWhere('m.brand LIKE :searchTerm')
                 ->setParameter('searchTerm', '%' . $searchTerm . '%');
         }
 
-        return $qb->setMaxResults($limit)
+        $offset = ($page - 1) * $limit;
+
+        $data = $qb->setMaxResults($limit)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
+
+        $count = 0;
+        if (count($data) > 0) {
+            $count = $qb->select('COUNT(c.id)')
+                ->setFirstResult(null)
+                ->setMaxResults(null)
+                ->getQuery()
+                ->getSingleScalarResult();
+        }
+
+
+        return [
+            'data' => $data,
+            'count' => $count
+        ];
     }
 
     public function findAllCars()

@@ -38,7 +38,7 @@
             <div class="w-full gap-2">
                 <div class="flex justify-between items-center">
                     <p class="font-bold">Statut</p>
-                    <p>{{ selectedReservation.getStatus.value }}</p>
+                    <p>{{ selectedReservation.getStatusValues }}</p>
                 </div>
                 <div class="flex justify-between items-center">
                     <p class="font-bold">Utilisateur</p>
@@ -82,7 +82,7 @@
                 <tr class="border-b border-gray-300 cursor-pointer {% if selectedReservation and selectedReservation.id == reservation.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_reservations', { selected: reservation.id }) }}'">
                     <td class="px-4 py-2">{{reservation.getUser.email}}</td>
                     <td class="px-4 py-2">{{reservation.getCar.getModel.name}}</td>
-                    <td class="px-4 py-2">{{reservation.getStatus.value}}</td>
+                    <td class="px-4 py-2">{{reservation.getStatusValue}}</td>
                 </tr>
             {% else %}
                 <tr>

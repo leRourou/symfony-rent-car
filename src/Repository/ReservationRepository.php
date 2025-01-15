@@ -19,6 +19,7 @@ class ReservationRepository extends ServiceEntityRepository implements Searchabl
 
     public function search(
         $limit = 10,
+        $page = 1,
         $searchTerm = null
     ) {
         $qb = $this->createQueryBuilder('r');

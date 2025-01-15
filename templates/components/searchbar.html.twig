@@ -1,0 +1,17 @@
+    <div class="mb-4">
+        <form method="get" action="{{ path(route) }}" class="flex">
+            {% for key, value in app.request.query.all %}
+                {% if key != 'search' and key != 'page' %}
+                    <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endif %}
+            {% endfor %}
+            <input type="hidden" name="page" value="1">
+            <input type="text" name="search" placeholder="Rechercher des {{ itemName }}..." 
+                class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-orange-400" 
+                value="{{ app.request.get('search')|default('') }}">
+            <button type="submit" 
+                class="ml-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                Recherche
+            </button>
+        </form>
+    </div>

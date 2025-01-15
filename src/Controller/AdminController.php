@@ -55,15 +55,20 @@ class AdminController extends AbstractController
     #[Route('/cars', name: 'admin_cars', methods: ['GET'])]
     public function cars(Request $request, CarRepository $carRepository): Response
     {
+        $itemsCount = $request->query->get('itemsCount', default: 10);
+        $page = $request->query->get('page', 1);
         $searchTerm = $request->query->get('search', null);
-        $selected = $request->query->get('selected', 0);
+        $selected = $request->query->get('selected', default: 0);
 
-        $cars = $carRepository->search(20, $searchTerm);
+        $cars = $carRepository->search($itemsCount, $page, $searchTerm);
         $selectedCar = $carRepository->find($selected);
+        $maxPage = $cars['count'] / $itemsCount;
 
         return $this->render('admin/cars.html.twig', [
-            'cars' => $cars,
-            'selectedCar' => $selectedCar
+            'cars' => $cars['data'],
+            'selectedCar' => $selectedCar,
+            'maxPage' => $maxPage,
+            'itemsCount' => $itemsCount
         ]);
     }
 

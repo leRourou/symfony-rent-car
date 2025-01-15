@@ -71,6 +71,16 @@ class Reservation
         return $this;
     }
 
+    public function getStatusValue()
+    {
+        return match ($this->getStatus()) {
+            ReservationStatus::Pending => "En attente",
+            ReservationStatus::Confirmed => "Confirmé",
+            ReservationStatus::Canceled => "Annulé",
+            default => "Statut inconnu",
+        };
+    }
+
     public function getUser(): ?User
     {
         return $this->user;

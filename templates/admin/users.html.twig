@@ -10,21 +10,6 @@
 
 <div class="example-wrapper">
 
-    {% set successMessages = app.flashes('success') %}
-    {% set errorMessages = app.flashes('error') %}
-
-    {% if successMessages %}
-        <div class="bg-green-100 text-green-700 p-4 rounded mb-4">
-            {{ successMessages|first }}
-        </div>
-    {% endif %}
-
-    {% if errorMessages %}
-        <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
-            {{ errorMessages|first }}
-        </div>
-    {% endif %}
-
     <!-- Barre de recherche -->
     <div class="mb-4">
         <form method="get" action="{{ path('admin_users') }}" class="flex">
