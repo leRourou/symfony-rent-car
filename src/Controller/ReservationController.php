@@ -22,6 +22,10 @@ use App\Listener\CarBookedListener;
 use App\Service\MailService;
 use Symfony\Component\Security\Core\Security;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use App\Event\CarBookedEvent;
+use App\Listener\CarBookedListener;
+use App\Service\MailService;
 
 class ReservationController extends AbstractController
 {
@@ -142,4 +146,21 @@ class ReservationController extends AbstractController
 
 
     
+    #[Route('/testo', name: 'app_testo')]
+    public function test()
+    {
+        $bookingDetails = [
+            'carModel' => 'Tesla Model 3',
+            'customerName' => 'Alice Dupont',
+            'bookingDate' => '2025-01-15',
+        ];
+
+        $a = $this->mailService->sendEmail('arthur.le.devedec@gmail.com', 'Car booked', 'mails/test.html.twig', $bookingDetails);
+        $event = new CarBookedEvent($bookingDetails);
+
+        $this->eventDispatcher->dispatch($event, CarBookedEvent::NAME);
+
+        return new Response('Car booked and event dispatched!');
+    }
+
 }
