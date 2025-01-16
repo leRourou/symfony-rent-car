@@ -3,20 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Reservation;
-use App\Entity\Car;
 use App\Entity\ReservationStatus;
 use App\Form\ReservationType;
 use App\Service\CarService;
 use App\Service\ReservationService;
 use App\Repository\CarRepository;
-use App\Repository\ReservationRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 
 
 class ReservationController extends AbstractController
@@ -25,19 +21,19 @@ class ReservationController extends AbstractController
     public function reservePage(CarService $carService, ReservationService $reservationService): Response
     {
         $cars = $carService->getAllCars();
-    
+
         $carsWithAvailability = [];
         foreach ($cars as $car) {
-            $model = $car->getModel(); 
+            $model = $car->getModel();
 
             $carsWithAvailability[] = [
                 'car' => $car,
                 'isAvailable' => $car->isCanBeRent(),
-                'modelName' => $model ? $model->getName() : 'Modèle inconnu', 
+                'modelName' => $model ? $model->getName() : 'Modèle inconnu',
                 'brand' => $model ? $model->getBrand() : 'Marque inconnue',
             ];
         }
-    
+
         return $this->render('reservation/index.html.twig', [
             'cars' => $carsWithAvailability,
         ]);
@@ -100,18 +96,12 @@ class ReservationController extends AbstractController
             $this->addFlash('error', 'Jeton CSRF invalide.');
             return $this->redirectToRoute('app_my_reservations');
         }
-    
+
         $em->remove($reservation);
         $em->flush();
-    
+
         $this->addFlash('success', 'La réservation a été supprimée avec succès.');
-    
+
         return $this->redirectToRoute('app_my_reservations');
     }
-    
-    
-    
-
-
-    
 }

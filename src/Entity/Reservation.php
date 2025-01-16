@@ -125,4 +125,9 @@ class Reservation
     {
         return $this->beginningDate->diff($this->endingDate)->days;
     }
+
+    public function getAmount(): float
+    {
+        return $this->getDaysDuration() * $this->getCar()->getPrice();
+    }
 }

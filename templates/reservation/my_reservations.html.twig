@@ -9,28 +9,28 @@
     <table class="min-w-full border-collapse border border-gray-300 shadow-lg">
         <thead class="bg-gray-200 text-left">
             <tr>
-                <th class="border border-gray-300 px-4 py-2 font-semibold">Modèle</th>
-                <th class="border border-gray-300 px-4 py-2 font-semibold">Marque</th>
-                <th class="border border-gray-300 px-4 py-2 font-semibold">Prix (€ / jour)</th>
+                <th class="border border-gray-300 px-4 py-2 font-semibold">Date de location</th>
+                <th class="border border-gray-300 px-4 py-2 font-semibold">Durée</th>
+                <th class="border border-gray-300 px-4 py-2 font-semibold">Voiture</th>
+                <th class="border border-gray-300 px-4 py-2 font-semibold">Coût total</th>
                 <th class="border border-gray-300 px-4 py-2 font-semibold">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for resa in reservations %}
                 <tr class="hover:bg-gray-100">
-                    <td class="border border-gray-300 px-4 py-2">{{ resa.getCar.getModel.name }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ resa.getCar.getModel.brand }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ resa.getCar.price }}</td>
+                    <td class="border border-gray-300 px-4 py-2">Du {{ resa.getBeginningDate.format('d-m-Y') }} au {{ resa.getEndingDate.format('d-m-Y') }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{resa.getDaysDuration}} jours</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ resa.getCar.getModel.name }} {{ resa.getCar.getModel.brand }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ resa.getAmount }}€</td>
                     <td class="border border-gray-300 px-4 py-2">
-<form action="{{ path('app_delete_reservation', {id: resa.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
-    <input type="hidden" name="_method" value="DELETE">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete_reservation_' ~ resa.id) }}">
-    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-        Supprimer
-    </button>
-</form>
-
-
+                        <form action="{{ path('app_delete_reservation', {id: resa.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_reservation_' ~ resa.id) }}">
+                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                                Annuler
+                            </button>
+                        </form>
                     </td>
                 </tr>
             {% else %}
