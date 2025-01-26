@@ -4,10 +4,12 @@ namespace App\Controller\Admin;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\CarRepository;
 use Symfony\Component\HttpFoundation\Request;
+use App\Form\EditCarType;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/admin/cars')]
 #[IsGranted('ROLE_ADMIN')]
@@ -31,5 +33,47 @@ class AdminCarController extends AbstractController
             'maxPage' => $maxPage,
             'itemsCount' => $itemsCount
         ]);
+    }
+
+    #[Route('/edit/{id}', name: 'admin_car_edit', methods: ['GET', 'POST'])]
+    public function editCar(int $id, Request $request, CarRepository $carRepository, EntityManagerInterface $entityManager): Response
+    {
+        $car = $carRepository->find($id);
+
+        if (!$car) {
+            throw $this->createNotFoundException('Véhicule non trouvé.');
+        }
+
+        $form = $this->createForm(EditCarType::class, $car);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($car);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le véhicule a été mis à jour avec succès.');
+            return $this->redirectToRoute('admin_cars');
+        }
+
+        return $this->render('admin/edit_car.html.twig', [
+            'form' => $form->createView(),
+            'car' => $car,
+        ]);
+    }
+
+    #[Route('/delete/{id}', name: 'admin_car_delete', methods: ['GET'])]
+    public function deleteCar(int $id, CarRepository $carRepository, EntityManagerInterface $entityManager): Response
+    {
+        $car = $carRepository->find($id);
+
+        if (!$car) {
+            throw $this->createNotFoundException('Véhicule non trouvé.');
+        }
+
+        $entityManager->remove($car);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Le véhicule a été supprimé avec succès.');
+        return $this->redirectToRoute('admin_cars');
     }
 }
