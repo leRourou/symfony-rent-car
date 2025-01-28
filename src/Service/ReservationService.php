@@ -8,6 +8,7 @@ use App\Repository\ReservationRepository;
 class ReservationService
 {
     private ReservationRepository $reservationRepository;
+
     public function __construct(ReservationRepository $reservationRepository)
     {
         $this->reservationRepository = $reservationRepository;
@@ -29,6 +30,7 @@ class ReservationService
         }
         return $reserved;
     }
+
     public function getNumberOfDays($month, $year)
     {
         return cal_days_in_month(CAL_GREGORIAN, $month, $year);
@@ -76,7 +78,6 @@ class ReservationService
             throw new \Exception('Réservation introuvable');
         }
 
-
         if ($reservation->getStatus() === 'canceled') {
             throw new \Exception('Réservation déjà annulée');
         }
@@ -99,5 +100,34 @@ class ReservationService
 
         $reservation->setStatus(ReservationStatus::Confirmed);
         $this->reservationRepository->save($reservation);
+    }
+
+    public function updateReservation($id, $status, $beginningDate, $endingDate)
+    {
+        $reservation = $this->reservationRepository->find($id);
+
+        if (!$reservation) {
+            throw new \Exception('Réservation introuvable');
+        }
+
+        $reservation->setStatus($this->convertStatusStringToObject($status));
+        $reservation->setBeginningDate(new \DateTime($beginningDate));
+        $reservation->setEndingDate(new \DateTime($endingDate));
+
+        $this->reservationRepository->save($reservation);
+    }
+
+    private function convertStatusStringToObject($status)
+    {
+        switch ($status) {
+            case 'pending':
+                return ReservationStatus::Pending;
+            case 'confirmed':
+                return ReservationStatus::Confirmed;
+            case 'canceled':
+                return ReservationStatus::Canceled;
+            default:
+                throw new \Exception('Statut invalide');
+        }
     }
 }

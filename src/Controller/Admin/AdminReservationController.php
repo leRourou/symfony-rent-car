@@ -55,4 +55,24 @@ class AdminReservationController extends AbstractController
             'selected' => $id
         ]);
     }
+
+    #[Route('/{id}/edit', name: 'admin_reservation_edit', methods: ['POST'])]
+    public function editReservation(Request $request, $id, ReservationService $reservationService): Response
+    {
+        $status = $request->request->get('status');
+        $beginningDate = $request->request->get('beginningDate');
+        $endingDate = $request->request->get('endingDate');
+
+        try {
+            $reservationService->updateReservation($id, $status, $beginningDate, $endingDate);
+            $this->addFlash('success', 'Réservation modifiée');
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('admin_reservations', [
+            'selected' => $id
+        ]);
+    }
+
 }
