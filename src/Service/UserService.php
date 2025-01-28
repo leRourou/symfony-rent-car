@@ -3,15 +3,18 @@
 namespace App\Service;
 
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
-
 
 class UserService
 {
     private UserRepository $userRepository;
-    public function __construct(UserRepository $userRepository)
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(UserRepository $userRepository, EntityManagerInterface $entityManager)
     {
         $this->userRepository = $userRepository;
+        $this->entityManager = $entityManager;
     }
 
     public function deleteUser($id)
@@ -31,5 +34,20 @@ class UserService
         }
 
         $this->userRepository->delete($user);
+    }
+
+    public function updateUser($id, $firstname, $lastname, $email)
+    {
+        $user = $this->userRepository->find($id);
+
+        if (!$user) {
+            throw new \Exception('Utilisateur non trouvé');
+        }
+
+        $user->setFirstname($firstname);
+        $user->setLastname($lastname);
+        $user->setEmail($email);
+
+        $this->entityManager->flush();
     }
 }

@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\UserRepository;
 use App\Service\UserService;
@@ -48,15 +48,20 @@ class AdminUserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'admin_user_edit', methods: ['POST'])]
-    public function editUser($id, UserService $userService): Response
+    public function editUser(Request $request, $id, UserService $userService): Response
     {
+        $firstname = $request->request->get('firstname');
+        $lastname = $request->request->get('lastname');
+        $email = $request->request->get('email');
+    
         try {
-            $userService->deleteUser($id);
-            $this->addFlash('success', 'Utilisateur supprimé');
+            $userService->updateUser($id, $firstname, $lastname, $email);
+            $this->addFlash('success', 'Utilisateur modifié');
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
         }
-
+    
         return $this->redirectToRoute('admin_users');
     }
+    
 }
