@@ -1,10 +1,11 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Reservation;
 use App\Entity\ReservationStatus;
 use App\Form\ReservationType;
+use App\Form\ReviewType;
+use App\Entity\Review;
 use App\Service\CarService;
 use App\Service\ReservationService;
 use App\Repository\CarRepository;
@@ -13,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
 
 class ReservationController extends AbstractController
 {
@@ -73,11 +73,13 @@ class ReservationController extends AbstractController
             $this->addFlash('success', 'Réservation réussie !');
             return $this->redirectToRoute('app_reserve');
         }
+        $reviews = $car->getReviews();
 
         return $this->render('reservation/reserve.html.twig', [
             'car' => $car,
             'form' => $form->createView(),
             'reservedDates' => $reservedDates,
+            'reviews' => $reviews,
         ]);
     }
 
@@ -85,8 +87,20 @@ class ReservationController extends AbstractController
     public function myReservations(ReservationService $reservationService): Response
     {
         $reservations = $reservationService->getReservationsByUser($this->getUser());
+        $reviewForms = [];
+
+        foreach ($reservations as $reservation) {
+            $review = new Review();
+            $reviewForm = $this->createForm(ReviewType::class, $review, [
+                'action' => $this->generateUrl('app_reservation_review', ['id' => $reservation->getId()]),
+                'method' => 'POST',
+            ]);
+            $reviewForms[$reservation->getId()] = $reviewForm->createView();
+        }
+
         return $this->render('reservation/my_reservations.html.twig', [
             'reservations' => $reservations,
+            'reviewForms' => $reviewForms,
         ]);
     }
     #[Route('/delete-reservation/{id}', name: 'app_delete_reservation', methods: ['POST'])]

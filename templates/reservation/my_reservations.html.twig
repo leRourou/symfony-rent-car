@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Réservez une voiture{% endblock %}
+{% block title %}Mes Réservations{% endblock %}
 
 {% block body %}
 <div class="container mx-auto py-8">
-    <h1 class="text-2xl font-semibold mb-6">Liste des voitures disponibles</h1>
+    <h1 class="text-2xl font-semibold mb-6">Liste des réservations</h1>
 
     <table class="min-w-full border-collapse border border-gray-300 shadow-lg">
         <thead class="bg-gray-200 text-left">
@@ -13,6 +13,7 @@
                 <th class="border border-gray-300 px-4 py-2 font-semibold">Durée</th>
                 <th class="border border-gray-300 px-4 py-2 font-semibold">Voiture</th>
                 <th class="border border-gray-300 px-4 py-2 font-semibold">Coût total</th>
+                <th class="border border-gray-300 px-4 py-2 font-semibold">Avis</th>
                 <th class="border border-gray-300 px-4 py-2 font-semibold">Actions</th>
             </tr>
         </thead>
@@ -20,9 +21,30 @@
             {% for resa in reservations %}
                 <tr class="hover:bg-gray-100">
                     <td class="border border-gray-300 px-4 py-2">Du {{ resa.getBeginningDate.format('d-m-Y') }} au {{ resa.getEndingDate.format('d-m-Y') }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{resa.getDaysDuration}} jours</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ resa.getDaysDuration }} jours</td>
                     <td class="border border-gray-300 px-4 py-2">{{ resa.getCar.getModel.name }} {{ resa.getCar.getModel.brand }}</td>
                     <td class="border border-gray-300 px-4 py-2">{{ resa.getAmount }}€</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        {{ form_start(reviewForms[resa.id]) }}
+                        
+                        <div class="rating-stars">
+                            {% for i in 1..5 %}
+                                <span class="star" data-value="{{ i }}">&#9733;</span>
+                            {% endfor %}
+                        </div>
+                        
+                        {{ form_widget(reviewForms[resa.id].rating, {'attr': {'class': 'hidden'}}) }}
+                        
+
+                        
+                        <div class="mt-2">
+                            <label class="block font-medium mb-1">Commentaire</label>
+                            {{ form_widget(reviewForms[resa.id].comment) }}
+                        </div>
+                        <div class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-1/2"> 
+                            {{ form_end(reviewForms[resa.id]) }}
+                        </div>
+                    </td>
                     <td class="border border-gray-300 px-4 py-2">
                         <form action="{{ path('app_delete_reservation', {id: resa.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
                             <input type="hidden" name="_method" value="DELETE">
@@ -43,4 +65,48 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.rating-stars').forEach(starsContainer => {
+            const stars = starsContainer.querySelectorAll('.star');
+            const input = starsContainer.nextElementSibling; 
+
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    input.value = value;
+
+                    stars.forEach(s => s.classList.remove('active'));
+                    for (let i = 0; i < value; i++) {
+                        stars[i].classList.add('active');
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    .rating-stars {
+        display: flex;
+        gap: 5px;
+        cursor: pointer;
+    }
+
+    .star {
+        font-size: 24px;
+        color: gray;
+        transition: color 0.3s;
+    }
+
+    .star:hover,
+    .star.active {
+        color: gold;
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
 {% endblock %}

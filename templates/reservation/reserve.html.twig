@@ -25,11 +25,11 @@
             <label for="reservation-dates" class="block text-sm font-medium text-gray-700">
                 Dates de réservation
             </label>
-            <input 
+            <input
                 required
-                type="text" 
-                id="reservation-dates" 
-                class="form-control w-full border-gray-300 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500" 
+                type="text"
+                id="reservation-dates"
+                class="form-control w-full border-gray-300 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500"
                 placeholder="Sélectionnez une plage de dates">
         </div>
 
@@ -42,6 +42,21 @@
             Confirmer la réservation
         </button>
         {{ form_end(form) }}
+    </div>
+
+    <div class="mt-6">
+        <h2 class="text-xl font-semibold mb-4">Avis des clients</h2>
+        {% if reviews is not empty %}
+            {% for review in reviews %}
+                <div class="review-item bg-gray-100 p-4 rounded-md shadow-md mb-4">
+                    <h3 class="text-lg font-semibold">Note : {{ review.rating }} étoiles</h3>
+                    <p class="text-gray-700">{{ review.comment }}</p>
+                    <p class="text-gray-500 text-sm">Date : {{ review.date|date('Y-m-d') }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-gray-500">Aucun avis disponible pour le moment.</p>
+        {% endif %}
     </div>
 </div>
 

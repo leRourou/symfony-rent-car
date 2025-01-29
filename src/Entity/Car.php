@@ -2,11 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 class Car
@@ -32,8 +30,13 @@ class Car
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'car', orphanRemoval: true)]
-    #[Ignore]
     private Collection $reservations;
+
+    /**
+     * @var Collection<int, Review>
+     */
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'car')]
+    private Collection $reviews;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
     private ?CarModel $model = null;
@@ -41,6 +44,7 @@ class Car
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -119,6 +123,35 @@ class Car
         if ($this->reservations->removeElement($reservation)) {
             if ($reservation->getCar() === $this) {
                 $reservation->setCar(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setCar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            if ($review->getCar() === $this) {
+                $review->setCar(null);
             }
         }
 
