@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Review;
@@ -16,6 +17,7 @@ class ReviewController extends AbstractController
     public function review(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $reservation = $entityManager->getRepository(Reservation::class)->find($id);
+
         if (!$reservation) {
             throw $this->createNotFoundException('Réservation non trouvée');
         }
@@ -25,9 +27,10 @@ class ReviewController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $review->setCar($reservation->getCar());
-            $review->setUser($this->getUser());
-            $review->setDate(new \DateTime());
+            $review->setCar($reservation->getCar())
+                ->setUser($this->getUser())
+                ->setDate(new \DateTime());
+
             $entityManager->persist($review);
             $entityManager->flush();
 

@@ -53,12 +53,12 @@ class AdminCarController extends AbstractController
 
             $this->addFlash('success', 'Le véhicule a été mis à jour avec succès.');
             return $this->redirectToRoute('admin_cars');
+        } else {
+            return $this->render('admin/edit_car.html.twig', [
+                'form' => $form->createView(),
+                'car' => $car,
+            ]);
         }
-
-        return $this->render('admin/edit_car.html.twig', [
-            'form' => $form->createView(),
-            'car' => $car,
-        ]);
     }
 
     #[Route('/delete/{id}', name: 'admin_car_delete', methods: ['GET'])]
@@ -70,7 +70,7 @@ class AdminCarController extends AbstractController
             throw $this->createNotFoundException('Véhicule non trouvé.');
         }
 
-        $entityManager->remove($car);
+        $entityManager->remove(object: $car);
         $entityManager->flush();
 
         $this->addFlash('success', 'Le véhicule a été supprimé avec succès.');
