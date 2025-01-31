@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservez votre voiture{% endblock %}
+
+{% block body %}
+<div class="container mx-auto py-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Réservation pour {{ car.model.name }}</h1>
+
+    <div class="mb-6">
+        <img src="https://www.shop4tesla.com/cdn/shop/articles/neue-tesla-model-y-variante-und-preiserhohung-long-range-und-performance-941778.jpg?v=1712842777" alt="{{ car.model.name }}" class="w-full h-auto rounded-lg shadow-md">
+    </div>
+
+    <div id="reservation-info" class="bg-gray-100 p-4 rounded-md shadow-md mb-6">
+        <p class="text-lg text-gray-700 font-semibold">
+            Prix par jour : <span id="price-per-day" class="text-black-600 font-bold">{{ car.price }}</span> €
+        </p>
+        <p class="text-lg text-gray-700 font-semibold mt-2">
+            Coût total estimé : <span id="total-price" class="text-black-600 font-bold">0</span> €
+        </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        {{ form_start(form) }}
+        <div class="space-y-6">
+            <label for="reservation-dates" class="block text-sm font-medium text-gray-700">
+                Dates de réservation
+            </label>
+            <input
+                required
+                type="text"
+                id="reservation-dates"
+                class="form-control w-full border-gray-300 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500"
+                placeholder="Sélectionnez une plage de dates">
+        </div>
+
+        {{ form_row(form.beginningDate, {'attr': {'type': 'hidden'}}) }}
+        {{ form_row(form.endingDate, {'attr': {'type': 'hidden'}}) }}
+        {{ form_errors(form.beginningDate) }}
+        {{ form_errors(form.endingDate) }}
+
+        <button type="submit" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
+            Confirmer la réservation
+        </button>
+        {{ form_end(form) }}
+    </div>
+
+    <div class="mt-6">
+        <h2 class="text-xl font-semibold mb-4">Avis des clients</h2>
+        {% if reviews is not empty %}
+            {% for review in reviews %}
+                <div class="review-item bg-gray-100 p-4 rounded-md shadow-md mb-4">
+                    <h3 class="text-lg font-semibold">Note : {{ review.rating }} étoiles</h3>
+                    <p class="text-gray-700">{{ review.comment }}</p>
+                    <p class="text-gray-500 text-sm">Date : {{ review.date|date('Y-m-d') }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-gray-500">Aucun avis disponible pour le moment.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+const reservedDates = {{ reservedDates | json_encode | raw }};
+
+const formattedDates = reservedDates.map(dateRange => ({
+    from: dateRange[0],
+    to: dateRange[1],
+}));
+
+flatpickr("#reservation-dates", {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    locale: "fr",
+    disable: reservedDates.map(date => new Date(date)),
+    onChange: function(selectedDates) {
+        if (selectedDates.length === 2) {
+            const formatDate = (date) => date.toISOString().split('T')[0];
+            document.querySelector("input[name='reservation[beginningDate]']").value = formatDate(selectedDates[0]);
+            document.querySelector("input[name='reservation[endingDate]']").value = formatDate(selectedDates[1]);
+
+            const msInDay = 24 * 60 * 60 * 1000;
+            const days = Math.round((selectedDates[1] - selectedDates[0]) / msInDay);
+
+            const pricePerDay = parseFloat(document.getElementById('price-per-day').innerText);
+            const totalPrice = days * pricePerDay;
+
+            document.getElementById('total-price').innerText = totalPrice.toFixed(2);
+        }
+    }
+});
+</script>
+{% endblock %}

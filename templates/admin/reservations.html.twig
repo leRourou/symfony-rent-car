@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des réservations{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <!-- Détails de la réservation sélectionnée -->
+    {% if selectedReservation %}
+        <div class="mb-4 bg-white p-4 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-bold text-orange-600">Réservation n°{{ selectedReservation.id }}</h1>
+                <div class="space-x-2">
+                    <a class="text-orange-600 hover:text-orange-800">✏️</a>
+                    <a class="text-orange-600 hover:text-orange-800">🗑️</a>
+                </div>
+            </div>
+            <div class="w-full gap-2">
+                <form method="post" action="{{ path('admin_reservation_edit', {id: selectedReservation.id}) }}">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="status">Statut</label>
+                        <select id="status" name="status" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <option value="pending" {% if selectedReservation.getStatusValue == 'pending' %}selected{% endif %}>En attente</option>
+                            <option value="confirmed" {% if selectedReservation.getStatusValue == 'confirmed' %}selected{% endif %}>Confirmée</option>
+                            <option value="canceled" {% if selectedReservation.getStatusValue == 'canceled' %}selected{% endif %}>Annulée</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="user">Utilisateur</label>
+                        <input type="text" id="user" name="user" value="{{ selectedReservation.getUser.email }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" readonly>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="car">Voiture</label>
+                        <input type="text" id="car" name="car" value="{{ selectedReservation.getCar.getModel.name }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" readonly>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="beginningDate">Début de la location</label>
+                        <input type="date" id="beginningDate" name="beginningDate" value="{{ selectedReservation.getBeginningDate.format('Y-m-d') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="endingDate">Fin de la location</label>
+                        <input type="date" id="endingDate" name="endingDate" value="{{ selectedReservation.getEndingDate.format('Y-m-d') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="daysDuration">Durée de la location</label>
+                        <input type="number" id="daysDuration" name="daysDuration" value="{{ selectedReservation.getDaysDuration }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" readonly>
+                    </div>
+                    <button type="submit" class="bg-orange-600 hover:bg-orange-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Tableau des réservations -->
+    <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+        <thead>
+            <tr class="bg-orange-600 text-white">
+                <th class="px-4 py-2 text-left">Utilisateur</th>
+                <th class="px-4 py-2 text-left">Voiture</th>
+                <th class="px-4 py-2 text-left">Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+                <tr class="border-b border-gray-300 cursor-pointer {% if selectedReservation and selectedReservation.id == reservation.id %}bg-orange-100{% endif %}" onclick="window.location.href='{{ path('admin_reservations', app.request.query.all|merge({'selected': reservation.id})) }}'">
+                    <td class="px-4 py-2">{{reservation.getUser.email}}</td>
+                    <td class="px-4 py-2">{{reservation.getCar.getModel.name}}</td>
+                    <td class="px-4 py-2">{{reservation.getStatusValue}}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="px-4 py-2 text-center text-gray-500">Aucune réservation trouvée</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "components/pagination.html.twig" with { currentPage: app.request.get('page')|default(1), route: 'admin_reservations', maxpage: maxPage, itemsCount: itemsCount } %}
+</div>
+{% endblock %}

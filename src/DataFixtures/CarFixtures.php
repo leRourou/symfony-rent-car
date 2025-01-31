@@ -32,16 +32,17 @@ class CarFixtures extends Fixture implements DependentFixtureInterface
         $faker = $this->fakerService->getFaker();
 
         for ($i = 0; $i < 50; $i++) {
-            $user = new Car();
+            $car = new Car();
 
-            $user
+            $car
                 ->setModel($this->getReference('model_' . rand(0, 29), CarModel::class))
                 ->setRegistrationNumber($faker->regexify('[A-Z]{2}[0-9]{3}[A-Z]{2}'))
                 ->setCanBeRent($faker->boolean())
-                ->setYear($faker->numberBetween(2000, 2021));
+                ->setYear($faker->numberBetween(2000, 2021))
+                ->setPrice($faker->randomFloat(2, 10, 100));
 
-            $this->addReference('car_' . $i, object: $user);
-            $manager->persist($user);
+            $this->addReference('car_' . $i, object: $car);
+            $manager->persist($car);
         }
 
         $manager->flush();

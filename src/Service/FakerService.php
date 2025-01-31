@@ -11,7 +11,7 @@ class FakerService
 
     public function __construct()
     {
-        $this->faker = Factory::create('fr_FR'); // Adapter la locale si nécessaire
+        $this->faker = Factory::create('fr_FR');
     }
 
     public function getFaker(): Generator

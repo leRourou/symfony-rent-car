@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 <html>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
     <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>   
+        <script>
+        <script>
+    toastr.options = {
+        "closeButton": true,
+        "positionClass": "toast-bottom-right",
+        "timeOut": "3000"
+    };
+        </script>
+        </script>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="{{ asset('build/app.css') }}">
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
         {% endblock %}
@@ -12,7 +28,46 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
+    <body class="bg-gray-100">
+        <header class="bg-orange-600 text-white py-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <div>
+                    <a href="/" class="text-2xl font-bold">Loue ta gova</a>
+                </div>
+                <div>
+                    <ul class="flex space-x-4 items-center">
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li><a href="{{ path('admin_dashboard') }}" class="hover:underline">Admin</a></li>
+                        {% endif %}
+                        {% if app.user %}
+                            <li><a href="/profile/edit" class="hover:underline">Profil</a></li>
+                            <li> <a href="/my-reservations" class="hover:underline">Mes réservations </a></li>
+                            <li>
+                                <form method="post" action="{{ path('app_logout') }}">
+                                    <button type="submit" class="hover:underline">Déconnexion</button>
+                                </form>
+                            </li>
+
+                        {% else %}
+                            <li><a href="{{ path('app_login') }}" class="hover:underline">Connexion</a></li>
+                            <li><a href="{{ path('app_register') }}" class="hover:underline">Inscription</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </header>
         {% block body %}{% endblock %}
+        <script>
+        if (typeof toastr !== 'undefined') {
+            {% for message in app.flashes('success') %}
+                toastr.success("{{ message|e('js') }}");
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                toastr.error("{{ message|e('js') }}");
+            {% endfor %}
+        } else {
+            console.error("Toastr is not loaded.");
+        }
+        </script>
     </body>
 </html>
