@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Reservation;
@@ -103,6 +104,7 @@ class ReservationController extends AbstractController
             'reviewForms' => $reviewForms,
         ]);
     }
+
     #[Route('/delete-reservation/{id}', name: 'app_delete_reservation', methods: ['POST'])]
     public function deleteReservation(Request $request, Reservation $reservation, EntityManagerInterface $em): Response
     {
