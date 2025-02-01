@@ -23,6 +23,7 @@ Because of that, he helped with pair programming.
 - Make a reservation
 - Edit profile
 - See user's reservations
+- Add ratings
 - Log out
 ## As admin
 - See users
@@ -32,3 +33,4 @@ Because of that, he helped with pair programming.
 - Edit reservation
 - See cars
 - Edit cars
+
