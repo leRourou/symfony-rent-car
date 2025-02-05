@@ -41,6 +41,6 @@ services:
       - "8081:80"
     volumes:
       - .:/var/www/html
-      - ./nginx:/etc/nginx/
+      - ./nginx:/etc/nginx:ro
     depends_on:
       - app
